@@ -152,7 +152,7 @@ if __name__ == "__main__":
                         help='List of prompts to use for the stable diffusion.')
     
     # optional parameters
-    parser.add_argument('--controlnet_path', dest='controlnet_path', type=str, 
+    parser.add_argument('--controlnet_name', dest='controlnet_name', type=str, 
                         help='Filepath to the ControlNet.')
     parser.add_argument('--negative_prompt', dest='negative_prompt', type=str, 
                         help='Specify a Negative Prompt for the stable diffusion process.')
