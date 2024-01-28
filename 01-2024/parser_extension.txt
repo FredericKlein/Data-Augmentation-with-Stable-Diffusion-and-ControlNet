@@ -1,0 +1,29 @@
+# frederics custom parser
+# get user parameter next
+# critical parameters
+parser.add_argument('--diffusion_model_path', dest='filepath_model', type=str, 
+                    help='Filepath to the stable diffusion model.')
+parser.add_argument('--image_path', dest='image_path', type=str, 
+                    help='Filepath to the png image, where the pedestrian should be added. Or filepath to the folder containing the images that should be used.')
+parser.add_argument('--prompt', dest='prompt', type=str, 
+                    help='List of prompts to use for the stable diffusion.')
+    
+# optional parameters
+parser.add_argument('--controlnet_name', dest='controlnet_name', type=str, 
+                    help='Filepath to the ControlNet.')
+parser.add_argument('--negative_prompt', dest='negative_prompt', type=str, 
+                    help='Specify a Negative Prompt for the stable diffusion process.')
+parser.add_argument('--openpose_path', dest='pose_path', type=str, 
+                    help='Filepath to the image which specifies the opnepose used as input for the controlnet.')
+parser.add_argument('--mask_path', dest='mask_path', type=str, 
+                    help='Filepath to the mask that specifies the position of addded pedestrians. If None is given the algorithm tries to automatically find a space.')
+parser.add_argument('--seed', dest='seed', type=int, 
+                    help='Set a seed.')
+parser.add_argument('--sampler_name', dest='sampler_name', type=str, 
+                    help='Choose a sampler name.')
+parser.add_argument('--batch_size', dest='batch_size', type=int, 
+                    help='Choose how many images should be created per prompt and image.')
+parser.add_argument('--mask_width', dest='mask_width', type=str, 
+                    help='Set a width for the mask. Default: 150')
+parser.add_argument('--mask_height', dest='mask_height', type=str, 
+                    help='Set a height for the mask. Default: 300')

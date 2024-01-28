@@ -1,0 +1,54 @@
+prepareation of environment:
+	conda create -n "daad" python=3.10 ipython
+	activate daad
+
+	conda install anaconda::git
+	git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
+
+in stable-diffusion-webui/modules/launch_utils.py
+	replace
+		torch_command = os.environ.get('TORCH_COMMAND', f"pip install torch==2.0.1 torchvision==0.15.2 --extra-index-url {torch_index_url}")
+    	with
+		torch_command = os.environ.get('TORCH_COMMAND', f"pip install --no-cache-dir torch==2.0.1 torchvision==0.15.2 --extra-index-url {torch_index_url}")
+
+
+run the file stable-diffusion-webui\webui-user.bat. Then in the opened browser
+	go to extensions -> install from url
+		https://github.com/Mikubill/sd-webui-controlnet.git
+	go to extensions -> installed -> apply and restart the webui by running stable-diffusion-webui\webui-user.bat
+		test if img2img with uploaded image, mask and pose works
+
+donwload models:
+	from https://huggingface.co/XpucT/Reliberate/tree/main
+		Reliberate_v3-inpainting.safetensors
+		place into stable-diffusion-webui/models/Stable-diffusion folder
+
+	from https://huggingface.co/lllyasviel/ControlNet-v1-1/tree/main
+		control_v11e_sd15_ip2p.pth
+		place into stable-diffusion-webui/models/ControlNet folder 
+
+in stable-diffusion-webui\modules\cmd_args.py:
+	add at the end of the file the content of the file prompt-extensions.txt
+
+
+run
+	python "stable-diffusion-webui\launch.py"
+		this should install stuff for a while and then open the webui in your browser again, you can close this.
+	python "stable-diffusion-webui\daad.py" --controlnet_name="control_v11e_sd15_ip2p.pth" --diffusion_model_path="stable-diffusion-webui\models\Stable-diffusion\Reliberate_v3-inpainting.safetensors" --image_path="image_folder" --prompt="astronaut walking away" --openpose_path="pose.png" --batch_size=4 --mask_path="mask_position.txt"
+
+#############################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
+it should work until here. However,this means that the function of automatically finding the mask is not working. You have to specify a mask_position.txt file
+#############################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
+
+environment:
+	pip install -r stable-diffusion-webui\requirements.txt
+	pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+	pip install -U git+https://github.com/luca-medeiros/lang-segment-anything.git
+		check if installation worked: python -> import lang_sam -> lang_sam.lang_sam.LangSAM() -> exit()
+		add the folder lang_sam from https://github.com/luca-medeiros/lang-segment-anything/tree/main/lang_sam into the folder stable-diffusion-webui\modules
+
+	python stable-diffusion-webui\data-augmentation-with-stable-diffusion-and-controlnet.py --controlnet_name="control_v11e_sd15_ip2p.pth" --diffusion_model_path="stable-diffusion-webui\models\Stable-diffusion\Reliberate_v3-inpainting.safetensors" --image_path="image_folder" --prompt="astronaut walking away" --openpose_path="pose.png" --batch_size=4
+forme	python "D:\stable-diffusion-webui\daad.py" --controlnet_name="control_v11e_sd15_ip2p.pth" --diffusion_model_path="D:\stable-diffusion-webui\models\Stable-diffusion\Reliberate_v3-inpainting.safetensors" --image_path="D:\image_folder" --prompt="astronaut walking away" --openpose_path="D:\pose.png" --batch_size=4 --mask_path="D:\mask_position.txt"
+
+
