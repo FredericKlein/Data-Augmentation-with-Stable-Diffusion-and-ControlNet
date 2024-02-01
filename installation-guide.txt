@@ -1,0 +1,56 @@
+preparation of environment:
+	conda create -n "daad" python=3.10 ipython
+	activate daad
+
+	conda install anaconda::git
+	git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
+
+in stable-diffusion-webui/modules/launch_utils.py
+	replace
+		torch_command = os.environ.get('TORCH_COMMAND', f"pip install torch==2.0.1 torchvision==0.15.2 --extra-index-url {torch_index_url}")
+    	with
+		torch_command = os.environ.get('TORCH_COMMAND', f"pip install --no-cache-dir torch==2.0.1 torchvision==0.15.2 --extra-index-url {torch_index_url}")
+
+run the file stable-diffusion-webui\webui-user.bat. Then in the opened browser
+	go to extensions -> install from url
+		https://github.com/Mikubill/sd-webui-controlnet.git
+	go to extensions -> installed -> apply and restart the webui by running stable-diffusion-webui\webui-user.bat
+		test if img2img with uploaded image, mask and pose works
+
+download models:
+	from https://huggingface.co/XpucT/Reliberate/tree/main
+		Reliberate_v3-inpainting.safetensors
+		place into stable-diffusion-webui/models/Stable-diffusion folder
+
+	from https://huggingface.co/lllyasviel/ControlNet-v1-1/tree/main
+		control_v11p_sd15_openpose.pth
+		place into stable-diffusion-webui/models/ControlNet folder 
+			if this older does not exist yet, restart the webui by double clicking webui-user.bat
+
+in stable-diffusion-webui\modules\cmd_args.py:
+	add at the end of the file the content of the file prompt-extensions.txt
+
+
+run
+	python stable-diffusion-webui\launch.py
+	python "stable-diffusion-webui\daad.py" --controlnet_name="control_v11p_sd15_openpose.pth" --diffusion_model_path="stable-diffusion-webui\models\Stable-diffusion\Reliberate_v3-inpainting.safetensors" --image_path="image_folder" --prompt="astronaut walking away" --prompt="Cowgirl walking away" --openpose_path="pose.png" --batch_size=1 --mask_path="mask_position.txt"
+
+#############################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
+at this point the script daad.py should work if and only if you specify a mask_position.txt file.
+#############################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
+
+environment:
+	pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+	pip install groundingdino-py
+	pip install segment-anything
+	pip install -U git+https://github.com/luca-medeiros/lang-segment-anything.git
+		this probably throws an error (wheel cannot be build for groundingdino?
+
+	add the folder lang_sam from https://github.com/luca-medeiros/lang-segment-anything/tree/main/lang_sam into the folder stable-diffusion-webui\modules
+
+
+	python "stable-diffusion-webui\daad.py" --controlnet_name="control_v11p_sd15_openpose.pth" --diffusion_model_path="stable-diffusion-webui\models\Stable-diffusion\Reliberate_v3-inpainting.safetensors" --image_path="image_folder" --prompt="Cowgirl walking away" --openpose_path="pose.png" --batch_size=1
+
+#############################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
+at this point the script daad.py should work even when you do not specify a mask_position.txt file
+#############################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
